@@ -34,7 +34,7 @@ part1  part2    part3  part4  part5   part6       part7
 + part6: mov字节数(16进制)
 + part7: 313030304C495650(ASCII含义为1000LIVP)
 
-part3和part6的8位的字节数最大约$2^{4\times 8}$字节也就是大约4 GiB。
+part3和part6的8位的字节数最大约 $$2^{4\times 8}$$ 字节也就是大约4 GiB。
 
 part1、part2、part4、part7都为固定值，part7的ASCII含义为1000LIVP。
 
