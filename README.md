@@ -2,7 +2,7 @@
  * @Author: LetMeFly
  * @Date: 2026-07-07 17:31:31
  * @LastEditors: LetMeFly.xyz
- * @LastEditTime: 2026-07-28 17:59:35
+ * @LastEditTime: 2026-07-29 21:03:17
 -->
 # 2livp
 
@@ -121,3 +121,4 @@ Big:
 Small:
 
 - [ ] 支持设置导出文件种类或规则（当前是默认导出所有文件包括.DS_Store）
+- [ ] 试下其他格式的静态图和动态视频，碰撞下文件类型编号
