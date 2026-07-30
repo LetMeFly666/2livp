@@ -2,7 +2,7 @@
 Author: LetMeFly
 Date: 2026-07-30 14:49:28
 LastEditors: LetMeFly.xyz
-LastEditTime: 2026-07-30 17:29:06
+LastEditTime: 2026-07-30 18:03:15
 Description: 不借助zip工具生成.livp
 Description: All Writen By Hand
 Description: What A Beautiful Design(bushi
@@ -155,9 +155,9 @@ class LivpCommenter(ZipCommenter):
     def __init__(self, static_file: File, dynamic_file: File):
         self.static_file = static_file
         self.dynamic_file = dynamic_file
-        self.static_file_type = self.static_file.name.split(b".")[-1]
+        self.static_file_type = self.static_file.name.rsplit(b".", 1)[-1].lower()
         assert self.static_file_type in [b"jpg", b"jpeg", b"heic"]
-        self.dynamic_file_type = self.dynamic_file.name.split(b".")[-1]
+        self.dynamic_file_type = self.dynamic_file.name.rsplit(b".", 1)[-1].lower()
         assert self.dynamic_file_type in [b"mov"]
     
     @staticmethod
