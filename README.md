@@ -2,7 +2,7 @@
  * @Author: LetMeFly
  * @Date: 2026-07-07 17:31:31
  * @LastEditors: LetMeFly.xyz
- * @LastEditTime: 2026-07-29 21:03:17
+ * @LastEditTime: 2026-07-30 17:48:27
 -->
 # 2livp
 
@@ -112,13 +112,26 @@ python live_pack1.py 静态文件路径 动态文件路径 导出livp文件路�
 
 运行`python livp_export.py 照片文件夹所在路径`命令，即可在`照片文件夹所在路径/_exported`文件夹下找到一个个导出的照片文件，有的是静态图有的是live图，直接拖拽到百度网盘或一刻相册即可直接上传。
 
+### [v2.0.0](https://github.com/LetMeFly666/2livp/releases/tag/v2.0.0)
+
+- [x] 直接手搓该类型.zip（不借助第三方zip工具） ([#3](https://github.com/LetMeFly666/2livp/issues/3)，原理见文章《[Zip：手动生成仅存储的zip文件（以百度系iOS动态图.livp为例）](https://blog.letmefly.xyz/2026/07/29/Other-Zip-ManuallyCreatingStoreOnlyZip_withLivpExample/)》)
+- [x] 静态图动态视频的非ASCII文件名支持
+- [x] 默认使用无需借助zip命令的`livp_maker.py`导出.livp文件
+
+运行`python live_pack1.py 静态文件路径 动态文件路径 导出livp文件路径`借助主机上的zip命令导出一个live图；
+
+运行`python livp_maker.py 静态文件路径 动态文件路径 导出livp文件路径`直接导出一个live图；
+
+运行`python livp_export.py 照片文件夹所在路径`命令，即可在`照片文件夹所在路径/_exported`文件夹下找到一个个导出的照片文件，有的是静态图有的是live图，直接拖拽到百度网盘或一刻相册即可直接上传。
+
 ## Can Do
 
 Big:
 
-- [ ] 直接手搓该类型.zip（不借助第三方zip工具）可行性探究
+- [x] 暂无
 
 Small:
 
 - [ ] 支持设置导出文件种类或规则（当前是默认导出所有文件包括.DS_Store）
 - [ ] 试下其他格式的静态图和动态视频，碰撞下文件类型编号
+- [ ] 同一文件夹下只有静态图和动态图时，即使静态图动态图文件名（不含后缀）不同也识别为一对，且导出文件名为其所在文件夹名

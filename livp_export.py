@@ -281,7 +281,7 @@ def pack_live(static, mov, output):
         os.path.dirname(
             os.path.abspath(__file__)
         ),
-        "livp_pack1.py"
+        "livp_maker.py"
     )
 
 
