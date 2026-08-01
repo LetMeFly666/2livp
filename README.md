@@ -2,7 +2,7 @@
  * @Author: LetMeFly
  * @Date: 2026-07-07 17:31:31
  * @LastEditors: LetMeFly.xyz
- * @LastEditTime: 2026-08-01 12:02:19
+ * @LastEditTime: 2026-08-01 18:22:05
 -->
 # 2livp
 
@@ -27,13 +27,13 @@ livp格式并非Apple官方格式，而是互联网厂商为了适配苹果系�
 part1  part2    part3  part4  part5   part6       part7
 ```
 
-|part|含义|举例|
+||含义|举例|
 |:--:|:--:|:--:|
 |part1|静态图类型|0002代表heic<br/>0005代表jepg|
-|part2|30+静态图文件名长度|如00000034|
+|part2|30+静态图文件名长度<hr/>即静态文件起始偏移地址|如00000034|
 |part3|静态图字节数|如000A0B3C|
-|part4|动态图类型|0003代表mov|
-|part5|part3<br/>+(30+静态图文件名长度)<br/>+(30+动态图文件名长度)|如000A0BA3|
+|part4|动态图类型|mov、mp4均为0003|
+|part5|part3<br/>+(30+静态图文件名长度)<br/>+(30+动态图文件名长度)<hr/>即动态文件起始偏移地址|如000A0BA3|
 |part6|动态图字节数|如001BF0C7|
 |part7|`1000LIVP`的ASCII码|固定为313030304C495650|
 
@@ -126,7 +126,15 @@ python live_pack1.py 静态文件路径 动态文件路径 导出livp文件路�
 
 ### [v2.1.0](https://github.com/LetMeFly666/2livp/releases/tag/v2.1.0)
 
+- [x] 动态视频支持.mp4格式
+- [x] 支持不导出文件（夹）前缀设定
+- [x] 删除了(主要由ChatGPT写的)`livp_export.py`，完全古法编程重写了一个
 - [x] 删除了需要借助zip工具的(主要由ChatGPT写的)`livp_pack1.py`
+- [x] vscode debug支持
+
+运行`python livp_maker.py 静态文件路径 动态文件路径 导出livp文件路径`直接导出一个live图；
+
+运行`python livp_export.py 照片文件夹所在路径`命令，即可在`照片文件夹所在路径/_exported`文件夹下找到一个个导出的照片文件，有的是静态图有的是live图，直接拖拽到百度网盘或一刻相册即可直接上传。
 
 ## Can Do
 
@@ -136,6 +144,5 @@ Big:
 
 Small:
 
-- [ ] 支持设置导出文件种类或规则（当前是默认导出所有文件包括.DS_Store）
 - [ ] 试下其他格式的静态图和动态视频，碰撞下文件类型编号
 - [ ] 同一文件夹下只有静态图和动态图时，即使静态图动态图文件名（不含后缀）不同也识别为一对，且导出文件名为其所在文件夹名

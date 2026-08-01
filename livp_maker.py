@@ -2,7 +2,7 @@
 Author: LetMeFly
 Date: 2026-07-30 14:49:28
 LastEditors: LetMeFly.xyz
-LastEditTime: 2026-07-30 18:43:43
+LastEditTime: 2026-08-01 16:44:14
 Description: 不借助zip工具生成.livp
 Description: All Writen By Hand
 Description: What A Beautiful Design(bushi
@@ -158,7 +158,7 @@ class LivpCommenter(ZipCommenter):
         self.static_file_type = self.static_file.name.rsplit(b".", 1)[-1].lower()
         assert self.static_file_type in [b"jpg", b"jpeg", b"heic"]
         self.dynamic_file_type = self.dynamic_file.name.rsplit(b".", 1)[-1].lower()
-        assert self.dynamic_file_type in [b"mov"]
+        assert self.dynamic_file_type in [b"mov", b"mp4"]
     
     @staticmethod
     def _val(val: int, length: int) -> str:
@@ -172,7 +172,7 @@ class LivpCommenter(ZipCommenter):
             comment += self._val(5, 4)
         comment += self._val(30 + len(self.static_file.name), 8)
         comment += self._val(self.static_file.get_size(), 8)
-        if self.dynamic_file_type == b"mov":
+        if self.dynamic_file_type in [b"mov", b"mp4"]:
             comment += self._val(3, 4)
         comment += self._val(
             self.static_file.get_size()
@@ -188,10 +188,15 @@ def help(filename: str):
     print(f"Usage: python {filename} <static_file> <dynamic_file> <output_file>")
 
 
+def main(static_file: str, dynamic_file: str, output_file: str):
+    zip = Zip(File(static_file), File(dynamic_file))
+    zip.write(output_file)
+
+
 if __name__ == "__main__":
     if len(argv) != 4:
         print("there must be 3 arguments, but got %d" % (len(argv) - 1))
         help(argv[0])
-        exit(1)    
-    zip = Zip(File(argv[1]), File(argv[2]))
-    zip.write(argv[3])
+        exit(1)
+    main(argv[1], argv[2], argv[3])
+    
