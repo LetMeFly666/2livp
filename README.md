@@ -2,7 +2,7 @@
  * @Author: LetMeFly
  * @Date: 2026-07-07 17:31:31
  * @LastEditors: LetMeFly.xyz
- * @LastEditTime: 2026-07-30 17:48:27
+ * @LastEditTime: 2026-08-01 12:02:19
 -->
 # 2livp
 
@@ -123,6 +123,10 @@ python live_pack1.py 静态文件路径 动态文件路径 导出livp文件路�
 运行`python livp_maker.py 静态文件路径 动态文件路径 导出livp文件路径`直接导出一个live图；
 
 运行`python livp_export.py 照片文件夹所在路径`命令，即可在`照片文件夹所在路径/_exported`文件夹下找到一个个导出的照片文件，有的是静态图有的是live图，直接拖拽到百度网盘或一刻相册即可直接上传。
+
+### [v2.1.0](https://github.com/LetMeFly666/2livp/releases/tag/v2.1.0)
+
+- [x] 删除了需要借助zip工具的(主要由ChatGPT写的)`livp_pack1.py`
 
 ## Can Do
 

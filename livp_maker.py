@@ -2,7 +2,7 @@
 Author: LetMeFly
 Date: 2026-07-30 14:49:28
 LastEditors: LetMeFly.xyz
-LastEditTime: 2026-07-30 18:03:15
+LastEditTime: 2026-07-30 18:43:43
 Description: 不借助zip工具生成.livp
 Description: All Writen By Hand
 Description: What A Beautiful Design(bushi
@@ -26,7 +26,7 @@ class File:
     
     def get_dos_datetime(self) -> tuple[int, int]:
         t = localtime(getmtime(self.filename))
-        year = min(max(t.tm_year, 1980), 2107)  #仅支持1980-2197年
+        year = min(max(t.tm_year, 1980), 2107)  #仅支持1980-2107年
         dos_time = (t.tm_hour << 11) | (t.tm_min << 5) | (t.tm_sec // 2)
         dos_date = ((year - 1980) << 9) | (t.tm_mon << 5) | t.tm_mday
         return dos_time, dos_date
