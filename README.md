@@ -2,7 +2,7 @@
  * @Author: LetMeFly
  * @Date: 2026-07-07 17:31:31
  * @LastEditors: LetMeFly.xyz
- * @LastEditTime: 2026-08-01 18:22:05
+ * @LastEditTime: 2026-08-01 18:26:49
 -->
 # 2livp
 
@@ -112,7 +112,7 @@ python live_pack1.py 静态文件路径 动态文件路径 导出livp文件路�
 
 运行`python livp_export.py 照片文件夹所在路径`命令，即可在`照片文件夹所在路径/_exported`文件夹下找到一个个导出的照片文件，有的是静态图有的是live图，直接拖拽到百度网盘或一刻相册即可直接上传。
 
-### [v2.0.0](https://github.com/LetMeFly666/2livp/releases/tag/v2.0.0)
+### [v2.0.0](https://github.com/LetMeFly666/2livp/releases/tag/v2.0.0) 手搓.zip支持
 
 - [x] 直接手搓该类型.zip（不借助第三方zip工具） ([#3](https://github.com/LetMeFly666/2livp/issues/3)，原理见文章《[Zip：手动生成仅存储的zip文件（以百度系iOS动态图.livp为例）](https://blog.letmefly.xyz/2026/07/29/Other-Zip-ManuallyCreatingStoreOnlyZip_withLivpExample/)》)
 - [x] 静态图动态视频的非ASCII文件名支持
@@ -124,7 +124,7 @@ python live_pack1.py 静态文件路径 动态文件路径 导出livp文件路�
 
 运行`python livp_export.py 照片文件夹所在路径`命令，即可在`照片文件夹所在路径/_exported`文件夹下找到一个个导出的照片文件，有的是静态图有的是live图，直接拖拽到百度网盘或一刻相册即可直接上传。
 
-### [v2.1.0](https://github.com/LetMeFly666/2livp/releases/tag/v2.1.0)
+### [v2.1.0](https://github.com/LetMeFly666/2livp/releases/tag/v2.1.0) 古法编程+更好的批量导出
 
 - [x] 动态视频支持.mp4格式
 - [x] 支持不导出文件（夹）前缀设定
