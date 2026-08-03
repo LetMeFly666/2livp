@@ -2,7 +2,7 @@
 Author: LetMeFly
 Date: 2026-08-01 15:12:04
 LastEditors: LetMeFly.xyz
-LastEditTime: 2026-08-03 16:57:02
+LastEditTime: 2026-08-03 17:42:14
 Description: still 古法编程
 Description: 没livp_maker.py美观
 '''
@@ -78,7 +78,7 @@ class FileGroup:
 
 def gen_unique_export_name(export_names: set[str], filename: str, filetype: str) -> str:
     name = filename + "." + filetype if filetype else filename
-    if name not in export_names:
+    if name.casefold() not in export_names:
         return name
     index = 1
     while True:
@@ -220,6 +220,7 @@ class TestInputGenerator:
             "tesT018-tEst.jPg", "tesT018-tEst.mOv",  # -> tesT018-tEst.livp
             "test019-中文.jpg", "test019-中文.mov",  # -> test019-中文.livp
             "test020_shouldNotBePaired.jpg", "test020_shouldnotbepaired.mov",  # -> test020_shouldNotBePaired.jpg + test020_shouldnotbepaired.mov
+            # "a.jpg", "A.jpg",  # 很多测试场景下这两个文件不会同时存在。
         ]
         self.expected_files = set([
             "test001.livp",

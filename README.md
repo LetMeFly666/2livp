@@ -2,7 +2,7 @@
  * @Author: LetMeFly
  * @Date: 2026-07-07 17:31:31
  * @LastEditors: LetMeFly.xyz
- * @LastEditTime: 2026-08-03 16:44:21
+ * @LastEditTime: 2026-08-03 17:45:42
 -->
 # 2livp
 
@@ -136,6 +136,18 @@ python live_pack1.py 静态文件路径 动态文件路径 导出livp文件路�
 
 运行`python livp_export.py 照片文件夹所在路径`命令，即可在`照片文件夹所在路径/_exported`文件夹下找到一个个导出的照片文件，有的是静态图有的是live图，直接拖拽到百度网盘或一刻相册即可直接上传。
 
+### [v2.2.2](https://github.com/LetMeFly666/2livp/releases/tag/v2.2.2) 大小写敏感问题修复(重写匹配逻辑)+pytest
+
+- [x] 重写导出匹配逻辑
+- [x] 默认配对时文件名大小写敏感，导出时文件名大小不敏感（casefold级别的不敏感）
+- [x] pytest支持
+
+运行`python livp_maker.py 静态文件路径 动态文件路径 导出livp文件路径`直接导出一个live图；
+
+运行`python livp_export.py 照片文件夹所在路径`命令，即可在`照片文件夹所在路径/_exported`文件夹下找到一个个导出的照片文件，有的是静态图有的是live图，直接拖拽到百度网盘或一刻相册即可直接上传。
+
+运行`pytest`命令可进行测试。
+
 ## Can Do
 
 Big:
@@ -146,4 +158,3 @@ Small:
 
 - [ ] 试下其他格式的静态图和动态视频，碰撞下文件类型编号
 - [ ] 同一文件夹下只有静态图和动态图时，即使静态图动态图文件名（不含后缀）不同也识别为一对，且导出文件名为其所在文件夹名
-- [x] 导出的文件后缀会变小写
