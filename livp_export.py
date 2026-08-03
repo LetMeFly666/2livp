@@ -2,7 +2,7 @@
 Author: LetMeFly
 Date: 2026-08-01 15:12:04
 LastEditors: LetMeFly.xyz
-LastEditTime: 2026-08-03 16:36:47
+LastEditTime: 2026-08-03 16:57:02
 Description: still 古法编程
 Description: 没livp_maker.py美观
 '''
@@ -85,7 +85,7 @@ def gen_unique_export_name(export_names: set[str], filename: str, filetype: str)
         name = f"{filename}_{index}"
         if filetype:
             name += "." + filetype
-        if name not in export_names:
+        if name.casefold() not in export_names:
             return name
         index += 1
 
@@ -117,7 +117,7 @@ def gen_export_list(src: Path, exclude_prefixes: list[str]) -> ExportList:
                 live_static = group.static[i]
                 live_dynamic = group.dynamic[i]
                 livp_name = gen_unique_export_name(exported_names, stem, "livp")
-                exported_names.add(livp_name)
+                exported_names.add(livp_name.casefold())  # Windows和Mac的文件系统大小写不敏感
                 export_list.dynamic_files.append(
                     ExportList.DynamicFile(
                         path=Path(root),
@@ -133,7 +133,7 @@ def gen_export_list(src: Path, exclude_prefixes: list[str]) -> ExportList:
             for other in others:
                 _, ext = os.path.splitext(other)
                 other_name = gen_unique_export_name(exported_names, stem, ext.lstrip("."))
-                exported_names.add(other_name)
+                exported_names.add(other_name.casefold())  # Windows和Mac默认APFS的文件系统大小写不敏感
                 export_list.static_files.append(
                     ExportList.StaticFile(
                         path=Path(root),
