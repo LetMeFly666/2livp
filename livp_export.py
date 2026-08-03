@@ -2,7 +2,7 @@
 Author: LetMeFly
 Date: 2026-08-01 15:12:04
 LastEditors: LetMeFly.xyz
-LastEditTime: 2026-08-03 11:27:40
+LastEditTime: 2026-08-03 16:05:19
 Description: still 古法编程
 Description: 没livp_maker.py美观
 '''
@@ -12,6 +12,7 @@ from pathlib import Path
 import uuid
 from dataclasses import dataclass, field, asdict
 from pprint import pprint
+from collections import defaultdict
 import livp_maker
 
 
@@ -21,25 +22,43 @@ IS_DEBUG = False
 IS_TEST = False
 
 
-@dataclass
-class StaticFile:
-    path: Path
-    original_name: str
-    exported_name: str
-
-
-@dataclass
-class DynamicFile:
-    path: Path
-    static_name: str
-    dynamic_name: str
-    livp_name: str
-
-
+# 导出方式
 @dataclass
 class ExportList:
+    # 要直接导出的文件
+    @dataclass
+    class StaticFile:
+        path: Path
+        original_name: str
+        exported_name: str
+    
+    # 要合并为live图的2个文件
+    @dataclass
+    class DynamicFile:
+        path: Path
+        static_name: str
+        dynamic_name: str
+        livp_name: str
+    
     static_files: list[StaticFile] = field(default_factory=list)
     dynamic_files: list[DynamicFile] = field(default_factory=list)
+
+
+# 当前目录下有哪些文件
+"""
+{
+    "image_123": {
+        "jpg": [
+            "image_123.jpg",
+            "IMAGE_123.jPg"
+        ],
+        "mov": [
+            "image_123.mov"
+        ]
+    }
+}
+"""
+type FilesStemSuffix = dict[str, dict[str, list[str]]]
 
 
 def gen_unique_export_name(export_names: set[str], filename: str, filetype: str) -> str:
@@ -56,74 +75,15 @@ def gen_unique_export_name(export_names: set[str], filename: str, filetype: str)
 
 def gen_export_list(src: Path, exclude_prefixes: list[str]) -> ExportList:
     export_list = ExportList()
-    export_names = set()
-    for root, dirs, files in os.walk(src):
-        # 覆盖掉dirs直接不遍历了
+    for root, dirs, files_original in os.walk(src):
+        # 排除指定前缀的文件夹
         dirs[:] = [d for d in dirs if not any(d.startswith(prefix) for prefix in exclude_prefixes)]
-        files = [f for f in files if not any(f.startswith(prefix) for prefix in exclude_prefixes)]
-        files_lower = [f.lower() for f in files]  # TODO: 这样A.jpg和a.mov会配对
-        done_files = set()
-        for file in files:
-            if IS_DEBUG:
-                print(file, done_files)
-            if file in done_files:
-                continue
-            done_files.add(file)
-            filetype = file.rsplit(".", 1)[-1].lower()
-            if filetype == file:
-                filetype = ""
-            filename = file[:-len(filetype) - 1] if filetype else file
-            has_paired = False
-            if '.' + filetype in SUPPORTED_STATIC_EXTS:
-                for dynamic_ext in SUPPORTED_DYNAMIC_EXTS:
-                    dynamic_file = filename + "." + dynamic_ext[1:]
-                    if not dynamic_file.lower() in files_lower or dynamic_file in done_files:  # 不然会重复配对
-                        continue
-                    dynamic_file = next(f for f in files if f.lower() == dynamic_file.lower())  # 保留原始大小写
-                    done_files.add(dynamic_file)
-                    livp_name = gen_unique_export_name(export_names, filename, "livp")
-                    export_names.add(livp_name)
-                    export_list.dynamic_files.append(
-                        DynamicFile(
-                            path=Path(root),
-                            static_name=file,
-                            dynamic_name=dynamic_file,
-                            livp_name=livp_name
-                        )
-                    )
-                    has_paired = True
-                    break
-            elif '.' + filetype in SUPPORTED_DYNAMIC_EXTS:  # 记得加.，debug了半天
-                for static_ext in SUPPORTED_STATIC_EXTS:
-                    static_file = filename + "." + static_ext[1:]
-                    if IS_DEBUG:
-                        print(f'file: {file}, static_file: {static_file}, done_files: {done_files}')
-                    if not static_file.lower() in files_lower or static_file in done_files:
-                        continue
-                    static_file = next(f for f in files if f.lower() == static_file.lower())  # 保留原始大小写
-                    done_files.add(static_file)
-                    livp_name = gen_unique_export_name(export_names, filename, "livp")
-                    export_names.add(livp_name)
-                    export_list.dynamic_files.append(
-                        DynamicFile(
-                            path=Path(root),
-                            static_name=static_file,
-                            dynamic_name=file,
-                            livp_name=livp_name
-                        )
-                    )
-                    has_paired = True
-                    break
-            if not has_paired:
-                unique_name = gen_unique_export_name(export_names, filename, filetype)
-                export_names.add(unique_name)
-                export_list.static_files.append(
-                    StaticFile(
-                        path=Path(root),
-                        original_name=file,
-                        exported_name=unique_name
-                    )
-                )
+        files: FilesStemSuffix = {}
+        for file in files_original:
+            stem, suffix = os.path.splitext(file)
+            files.setdefault(stem, {}).setdefault(suffix.lower(), []).append(file)
+        for stem, suffix_dict in files.items():
+            for 
     return export_list
 
 
@@ -200,6 +160,9 @@ class TestInputGenerator:
             "test015_withoutextension",  # -> test015_withoutextension
             "test016_upper.JPG", "test016_upper.MOV",  # -> test016_upper.livp
             "test017_IMG_6229.JPEG", "test017_IMG_6229.MP4",  # -> test017_IMG_6229.livp
+            "tesT018-tEst.jPg", "tesT018-tEst.mOv",  # -> tesT018-tEst.livp
+            "test019-中文.jpg", "test019-中文.mov",  # -> test019-中文.livp
+            "test020_shouldNotBePaired.jpg", "test020_shouldnotbepaired.mov",  # -> test020_shouldNotBePaired.jpg + test020_shouldnotbepaired.mov
         ]
         self.expected_files = set([
             "test001.livp",
@@ -217,6 +180,9 @@ class TestInputGenerator:
             "test015_withoutextension",
             "test016_upper.livp",
             "test017_IMG_6229.livp",
+            "tesT018-tEst.livp",
+            "test019-中文.livp",
+            "test020_shouldNotBePaired.jpg", "test020_shouldnotbepaired.mov",
         ])
         self._gen_test_input_dir()
     
