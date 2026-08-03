@@ -2,7 +2,7 @@
 Author: LetMeFly
 Date: 2026-08-01 15:12:04
 LastEditors: LetMeFly.xyz
-LastEditTime: 2026-08-01 18:11:11
+LastEditTime: 2026-08-03 11:27:40
 Description: still 古法编程
 Description: 没livp_maker.py美观
 '''
@@ -61,6 +61,7 @@ def gen_export_list(src: Path, exclude_prefixes: list[str]) -> ExportList:
         # 覆盖掉dirs直接不遍历了
         dirs[:] = [d for d in dirs if not any(d.startswith(prefix) for prefix in exclude_prefixes)]
         files = [f for f in files if not any(f.startswith(prefix) for prefix in exclude_prefixes)]
+        files_lower = [f.lower() for f in files]  # TODO: 这样A.jpg和a.mov会配对
         done_files = set()
         for file in files:
             if IS_DEBUG:
@@ -76,8 +77,9 @@ def gen_export_list(src: Path, exclude_prefixes: list[str]) -> ExportList:
             if '.' + filetype in SUPPORTED_STATIC_EXTS:
                 for dynamic_ext in SUPPORTED_DYNAMIC_EXTS:
                     dynamic_file = filename + "." + dynamic_ext[1:]
-                    if not dynamic_file in files or dynamic_file in done_files:  # 不然会重复配对
+                    if not dynamic_file.lower() in files_lower or dynamic_file in done_files:  # 不然会重复配对
                         continue
+                    dynamic_file = next(f for f in files if f.lower() == dynamic_file.lower())  # 保留原始大小写
                     done_files.add(dynamic_file)
                     livp_name = gen_unique_export_name(export_names, filename, "livp")
                     export_names.add(livp_name)
@@ -96,8 +98,9 @@ def gen_export_list(src: Path, exclude_prefixes: list[str]) -> ExportList:
                     static_file = filename + "." + static_ext[1:]
                     if IS_DEBUG:
                         print(f'file: {file}, static_file: {static_file}, done_files: {done_files}')
-                    if not static_file in files or static_file in done_files:
+                    if not static_file.lower() in files_lower or static_file in done_files:
                         continue
+                    static_file = next(f for f in files if f.lower() == static_file.lower())  # 保留原始大小写
                     done_files.add(static_file)
                     livp_name = gen_unique_export_name(export_names, filename, "livp")
                     export_names.add(livp_name)
@@ -195,6 +198,8 @@ class TestInputGenerator:
             "d/test013.jpg", "e/test013.jpg",  # -> test013.jpg + test013_1.jpg
             "f/test014.jpg", "f/test014.mov", "g/test014.jpg", "g/test014.mov",  # -> test014.livp + test014_1.livp
             "test015_withoutextension",  # -> test015_withoutextension
+            "test016_upper.JPG", "test016_upper.MOV",  # -> test016_upper.livp
+            "test017_IMG_6229.JPEG", "test017_IMG_6229.MP4",  # -> test017_IMG_6229.livp
         ]
         self.expected_files = set([
             "test001.livp",
@@ -209,7 +214,9 @@ class TestInputGenerator:
             "test012.livp",
             "test013.jpg", "test013_1.jpg",
             "test014.livp", "test014_1.livp",
-            "test015_withoutextension"
+            "test015_withoutextension",
+            "test016_upper.livp",
+            "test017_IMG_6229.livp",
         ])
         self._gen_test_input_dir()
     
