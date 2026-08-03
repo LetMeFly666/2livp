@@ -2,7 +2,7 @@
 Author: LetMeFly
 Date: 2026-08-01 15:12:04
 LastEditors: LetMeFly.xyz
-LastEditTime: 2026-08-03 16:05:19
+LastEditTime: 2026-08-03 16:36:47
 Description: still 古法编程
 Description: 没livp_maker.py美观
 '''
@@ -12,7 +12,6 @@ from pathlib import Path
 import uuid
 from dataclasses import dataclass, field, asdict
 from pprint import pprint
-from collections import defaultdict
 import livp_maker
 
 
@@ -48,17 +47,33 @@ class ExportList:
 """
 {
     "image_123": {
-        "jpg": [
+        static: [
             "image_123.jpg",
-            "IMAGE_123.jPg"
+            "image_123.jPg"
         ],
-        "mov": [
+        dynamic: [
             "image_123.mov"
+            "image_123.mp4"
+        ],
+        other: [
+            "image_123.txt"
         ]
+    },
+    "IMAGE_123": {
+        static: [
+            "IMAGE_123.jpg"
+        ],
+        dynamic: [],
+        other: []
     }
 }
 """
-type FilesStemSuffix = dict[str, dict[str, list[str]]]
+type FilesStemSuffix = dict[str, FileGroup]
+@dataclass
+class FileGroup:
+    static: list[str] = field(default_factory=list)
+    dynamic: list[str] = field(default_factory=list)
+    other: list[str] = field(default_factory=list)
 
 
 def gen_unique_export_name(export_names: set[str], filename: str, filetype: str) -> str:
@@ -67,7 +82,9 @@ def gen_unique_export_name(export_names: set[str], filename: str, filetype: str)
         return name
     index = 1
     while True:
-        name = f"{filename}_{index}.{filetype}"
+        name = f"{filename}_{index}"
+        if filetype:
+            name += "." + filetype
         if name not in export_names:
             return name
         index += 1
@@ -75,15 +92,55 @@ def gen_unique_export_name(export_names: set[str], filename: str, filetype: str)
 
 def gen_export_list(src: Path, exclude_prefixes: list[str]) -> ExportList:
     export_list = ExportList()
+    exported_names = set()
     for root, dirs, files_original in os.walk(src):
         # 排除指定前缀的文件夹
         dirs[:] = [d for d in dirs if not any(d.startswith(prefix) for prefix in exclude_prefixes)]
+        files_original = [f for f in files_original if not any(f.startswith(prefix) for prefix in exclude_prefixes)]
+        # 转为以 stem 为 key 的字典
         files: FilesStemSuffix = {}
         for file in files_original:
-            stem, suffix = os.path.splitext(file)
-            files.setdefault(stem, {}).setdefault(suffix.lower(), []).append(file)
-        for stem, suffix_dict in files.items():
-            for 
+            stem, ext = os.path.splitext(file)
+            files.setdefault(stem, FileGroup())
+            if ext.lower() in SUPPORTED_STATIC_EXTS:
+                files[stem].static.append(file)
+            elif ext.lower() in SUPPORTED_DYNAMIC_EXTS:
+                files[stem].dynamic.append(file)
+            else:
+                files[stem].other.append(file)
+        
+        # 开始配对、生成导出列表
+        for stem, group in files.items():
+            num_static, num_dynamic = len(group.static), len(group.dynamic)
+            num_less = min(num_static, num_dynamic)
+            for i in range(num_less):
+                live_static = group.static[i]
+                live_dynamic = group.dynamic[i]
+                livp_name = gen_unique_export_name(exported_names, stem, "livp")
+                exported_names.add(livp_name)
+                export_list.dynamic_files.append(
+                    ExportList.DynamicFile(
+                        path=Path(root),
+                        static_name=live_static,
+                        dynamic_name=live_dynamic,
+                        livp_name=livp_name
+                    )
+                )
+            if num_static <= num_dynamic:
+                others = group.dynamic[num_less:] + group.other
+            else:
+                others = group.static[num_less:] + group.other
+            for other in others:
+                _, ext = os.path.splitext(other)
+                other_name = gen_unique_export_name(exported_names, stem, ext.lstrip("."))
+                exported_names.add(other_name)
+                export_list.static_files.append(
+                    ExportList.StaticFile(
+                        path=Path(root),
+                        original_name=other,
+                        exported_name=other_name
+                    )
+                )
     return export_list
 
 
