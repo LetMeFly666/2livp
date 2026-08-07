@@ -2,7 +2,7 @@
 Author: LetMeFly
 Date: 2026-08-01 15:12:04
 LastEditors: LetMeFly.xyz
-LastEditTime: 2026-08-03 17:42:14
+LastEditTime: 2026-08-07 09:37:59
 Description: still 古法编程
 Description: 没livp_maker.py美观
 '''
@@ -188,6 +188,7 @@ def export(export_list: ExportList, dst_dir: Path):
             livp_maker.main(src_static, src_dynamic, dst_livp)
         except Exception as e:
             print(f"生成livp失败：{src_static}, {src_dynamic} -> {dst_livp}，错误：{e}")
+    print(dst_dir)  # 不加多余的文字描述了，正常情况整个脚本就这一个极简输出好了
 
 
 class TestInputGenerator:
