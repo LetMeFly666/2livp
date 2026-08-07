@@ -2,7 +2,7 @@
  * @Author: LetMeFly
  * @Date: 2026-07-07 17:31:31
  * @LastEditors: LetMeFly.xyz
- * @LastEditTime: 2026-08-03 17:49:17
+ * @LastEditTime: 2026-08-07 10:45:41
 -->
 # 2livp
 
@@ -161,3 +161,11 @@ Small:
 Maybe?
 
 - [ ] 同一文件夹下只有静态图和动态图时，即使静态图动态图文件名（不含后缀）不同也识别为一对，且导出文件名为其所在文件夹名?
+
+## End
+
+**动态文件类型碰撞**
+
+详见分支[test/dynamic_code](https://github.com/LetMeFly666/2livp/tree/test/dynamic_code)
+
+测试结果：1-10各种code效果大差不差。
